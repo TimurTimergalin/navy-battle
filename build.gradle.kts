@@ -17,3 +17,11 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks {
+    jar {
+        manifest {
+            attributes("Main-Class" to "com.greenatom.navybattle.Main")
+        }
+    }
+}
