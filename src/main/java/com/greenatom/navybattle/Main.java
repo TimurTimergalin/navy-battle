@@ -1,11 +1,12 @@
 package com.greenatom.navybattle;
 
+import com.greenatom.navybattle.view.components.TextLine;
 import com.greenatom.navybattle.view.components.field.Field;
 import com.greenatom.navybattle.view.components.field.TileStatus;
 import com.greenatom.navybattle.view.utils.Printer;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         new Printer().clearAll().flush();
         new Field(4, 4)
                 .draw()
@@ -17,6 +18,10 @@ public class Main {
                 .changeStatus(7, 4, TileStatus.HORIZONTAL)
                 .changeStatus(7, 5, TileStatus.HORIZONTAL)
                 .changeStatus(7, 6, TileStatus.HORIZONTAL);
+
+        var textLine = new TextLine(6, 35, "Some long text");
+        Thread.sleep(2000);
+        textLine.setText("Short text");
 
         new Printer().goTo(20, 1).flush();
     }
