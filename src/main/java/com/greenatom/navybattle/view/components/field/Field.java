@@ -1,10 +1,11 @@
 package com.greenatom.navybattle.view.components.field;
 
+import com.greenatom.navybattle.view.components.Component;
 import com.greenatom.navybattle.view.utils.Printer;
 
 import java.util.Map;
 
-public class Field {
+public class Field implements Component {
     private static final int size = 10;
 
     private static final Map<TileStatus, String> tileChar = Map.of(
@@ -33,18 +34,18 @@ public class Field {
 
     public Field draw() {
         var printer = new Printer()
-                .goTo(originX, originY)
+                .goTo(originY, originX)
                 .text("    ");  // 4 spaces
 
         for (char i = 0; i < size; ++i) {
             printer.text(((char)('A' + i)) + " ");
         }
 
-        printer.goTo(originX + 1, originY);
+        printer.goTo(originY + 1, originX);
         drawLine(printer);
 
         for (int i = 1; i <= size; ++i) {
-            printer.goTo(originX + 1 + i, originY);
+            printer.goTo(originY + 1 + i, originX);
             if (i < 10) {
                 printer.text(" ");
             }
@@ -56,7 +57,7 @@ public class Field {
             }
             printer.text("|");
         }
-        printer.goTo(originX + size + 2, originY);
+        printer.goTo(originY + size + 2, originX);
         drawLine(printer);
         printer.flush();
 
@@ -64,12 +65,32 @@ public class Field {
     }
 
     public Field changeStatus(int x, int y, TileStatus status) {
-        int consoleX = originX + 1 + x;
-        int consoleY = originY + 2 + 2 * y;
+        int consoleX = originX + 2 + 2 * x;
+        int consoleY = originY + 1 + y;
 
         new Printer()
-                .goTo(consoleX, consoleY)
+                .goTo(consoleY, consoleX)
                 .text(tileChar.get(status));
         return this;
+    }
+
+    @Override
+    public int getTop() {
+        return originY;
+    }
+
+    @Override
+    public int getLeft() {
+        return originX;
+    }
+
+    @Override
+    public int getWidth() {
+        return 2 * size + 5;
+    }
+
+    @Override
+    public int getHeight() {
+        return size + 3;
     }
 }

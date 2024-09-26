@@ -2,7 +2,7 @@ package com.greenatom.navybattle.view.components;
 
 import com.greenatom.navybattle.view.utils.Printer;
 
-public class TextLine {
+public class TextLine implements Component {
     private final int startX;
     private final int startY;
 
@@ -19,7 +19,7 @@ public class TextLine {
     }
 
     private void clear(Printer printer) {
-        printer.goTo(startX, startY);
+        printer.goTo(startY, startX);
 
         for (int i = 0; i < size; i++) {
             printer.text(" ");
@@ -30,7 +30,27 @@ public class TextLine {
     public void setText(String text) {
         var printer = new Printer();
         clear(printer);
-        printer.goTo(startX, startY).text(text);
+        printer.goTo(startY, startX).text(text);
         size = text.length();
+    }
+
+    @Override
+    public int getTop() {
+        return startY;
+    }
+
+    @Override
+    public int getLeft() {
+        return startX;
+    }
+
+    @Override
+    public int getWidth() {
+        return size;
+    }
+
+    @Override
+    public int getHeight() {
+        return 1;
     }
 }
