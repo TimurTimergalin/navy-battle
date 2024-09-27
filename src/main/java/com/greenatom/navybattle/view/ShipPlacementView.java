@@ -20,9 +20,13 @@ public class ShipPlacementView {
         this.allowedShips = allowedShips;
     }
 
+    public Field getBattlefield() {
+        return battlefield;
+    }
+
     public void draw() {
         new Printer().toggleCursor(false).clearAll();
-        battlefield = new Field(2, 2);
+        battlefield = new Field(2, 2, size);
         battlefield.draw();
 
         var inputLabel = new TextLine(battlefield.getLeft(), battlefield.getBottom() + 2, "Your command: ");

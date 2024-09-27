@@ -6,7 +6,7 @@ import com.greenatom.navybattle.view.utils.Printer;
 import java.util.Map;
 
 public class Field implements Component {
-    private static final int size = 10;
+    private final int size;
 
     private static final Map<TileStatus, String> tileChar = Map.of(
             TileStatus.FOG, "*",
@@ -19,7 +19,8 @@ public class Field implements Component {
     private final int originX;
     private final int originY;
 
-    public Field(int originX, int originY) {
+    public Field(int size, int originX, int originY) {
+        this.size = size;
         this.originX = originX;
         this.originY = originY;
     }
