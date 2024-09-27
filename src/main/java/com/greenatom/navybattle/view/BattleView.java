@@ -47,7 +47,7 @@ public class BattleView {
 
         enemyField = new Field(alliedField.getRight() + 8, alliedField.getTop(), size);
         enemyField.draw();
-        log = new Chat(alliedField.getLeft(), alliedField.getBottom() + 1, 4);
+        log = new Chat(alliedField.getLeft() + 3, alliedField.getBottom() + 2, 4);
         greetInChat();
 
         var inputLabel = new TextLine(log.getLeft(), log.getBottom() + 2, "Input coordinates: ");
@@ -77,7 +77,7 @@ public class BattleView {
         new Printer().flush();
     }
 
-    private void putAtEnd() {
+    public void putAtEnd() {
         new Printer().goTo(errorMessageLine.getBottom() + 1, 1);
     }
 }

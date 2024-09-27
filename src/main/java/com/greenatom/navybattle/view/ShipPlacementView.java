@@ -5,6 +5,7 @@ import com.greenatom.navybattle.view.components.TextLine;
 import com.greenatom.navybattle.view.components.field.Field;
 import com.greenatom.navybattle.view.utils.Printer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShipPlacementView {
@@ -16,7 +17,7 @@ public class ShipPlacementView {
 
     public ShipPlacementView(int size, List<Integer> allowedShips) {
         this.size = size;
-        this.allowedShips = allowedShips;
+        this.allowedShips = new ArrayList<>(allowedShips);  // Во избежание изменений извне
     }
 
     public Field getBattlefield() {
@@ -88,7 +89,7 @@ public class ShipPlacementView {
         new Printer().flush();
     }
 
-    private void putAtEnd() {
+    public void putAtEnd() {
         new Printer().goTo(errorMessageLine.getBottom() + 1, 1);
     }
 }

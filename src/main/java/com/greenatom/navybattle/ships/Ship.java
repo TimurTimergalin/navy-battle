@@ -36,14 +36,14 @@ public class Ship {
         return switch (direction) {
             case LEFT -> (i) -> new Coordinates(originX - i, originY);
             case RIGHT -> (i) -> new Coordinates(originX + i, originY);
-            case UP -> (i) -> new Coordinates(originX, originY + i);
-            case DOWN -> (i) -> new Coordinates(originX, originY - i);
+            case UP -> (i) -> new Coordinates(originX, originY - i);
+            case DOWN -> (i) -> new Coordinates(originX, originY + i);
         };
     }
 
     public Ship(int originX, int originY, int size, Direction direction) {
         this(
-                IntStream.rangeClosed(1, size)
+                IntStream.range(0, size)
                         .mapToObj(
                                 getCoordinateGenerator(direction, originX, originY)
                         )
@@ -57,5 +57,9 @@ public class Ship {
 
     public int getSize() {
         return tiles.size();
+    }
+
+    public boolean isVertical() {
+        return getSize() == 1 || tiles.get(0).x() == tiles.get(1).x();
     }
 }
