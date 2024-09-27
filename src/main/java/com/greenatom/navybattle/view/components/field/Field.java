@@ -19,7 +19,7 @@ public class Field implements Component {
     private final int originX;
     private final int originY;
 
-    public Field(int size, int originX, int originY) {
+    public Field(int originX, int originY, int size) {
         this.size = size;
         this.originX = originX;
         this.originY = originY;
