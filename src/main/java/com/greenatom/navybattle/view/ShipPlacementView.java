@@ -8,12 +8,11 @@ import com.greenatom.navybattle.view.utils.Printer;
 import java.util.List;
 
 public class ShipPlacementView {
+    private final int size;
+    private final List<Integer> allowedShips;
     private Field battlefield;
     private InputLine inputLine;
     private TextLine errorMessageLine;
-
-    private final int size;
-    private final List<Integer> allowedShips;
 
     public ShipPlacementView(int size, List<Integer> allowedShips) {
         this.size = size;
@@ -25,7 +24,7 @@ public class ShipPlacementView {
     }
 
     public void draw() {
-        new Printer().toggleCursor(false).clearAll();
+        var printer = new Printer().toggleCursor(false).clearAll();
         battlefield = new Field(2, 2, size);
         battlefield.draw();
 
@@ -35,6 +34,7 @@ public class ShipPlacementView {
         errorMessageLine = new TextLine(inputLabel.getLeft(), inputLabel.getBottom() + 1);
         drawHints();
         putAtEnd();
+        printer.flush();
     }
 
     private void drawHints() {
@@ -78,12 +78,14 @@ public class ShipPlacementView {
     public String getCommand() {
         String inp = inputLine.getInput();
         putAtEnd();
+        new Printer().flush();
         return inp;
     }
 
     public void setErrorMessage(String message) {
         errorMessageLine.setText(message);
         putAtEnd();
+        new Printer().flush();
     }
 
     private void putAtEnd() {

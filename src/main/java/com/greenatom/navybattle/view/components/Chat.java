@@ -3,7 +3,7 @@ package com.greenatom.navybattle.view.components;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Chat implements Component{
+public class Chat implements Component {
     private final List<TextLine> textLines;
 
     public Chat(int originX, int originY, int size) {

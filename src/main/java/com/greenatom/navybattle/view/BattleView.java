@@ -7,13 +7,12 @@ import com.greenatom.navybattle.view.components.field.Field;
 import com.greenatom.navybattle.view.utils.Printer;
 
 public class BattleView {
+    private final int size;
     private Field alliedField;
     private Field enemyField;
     private Chat log;
     private InputLine coordinatesInput;
     private TextLine errorMessageLine;
-
-    private final int size;
 
     public BattleView(int size) {
         this.size = size;
@@ -42,7 +41,7 @@ public class BattleView {
     }
 
     public void draw() {
-        new Printer().toggleCursor(false).clearAll();
+        var printer = new Printer().toggleCursor(false).clearAll();
         alliedField = new Field(2, 2, size);
         alliedField.draw();
 
@@ -56,22 +55,26 @@ public class BattleView {
 
         errorMessageLine = new TextLine(inputLabel.getLeft(), inputLabel.getBottom() + 2);
         putAtEnd();
+        printer.flush();
     }
 
     public void logMessage(String message) {
         log.addMessage(message);
         putAtEnd();
+        new Printer().flush();
     }
 
     public String getCoordinates() {
         String result = coordinatesInput.getInput();
         putAtEnd();
+        new Printer().flush();
         return result;
     }
 
     public void setErrorMessage(String message) {
         errorMessageLine.setText(message);
         putAtEnd();
+        new Printer().flush();
     }
 
     private void putAtEnd() {
