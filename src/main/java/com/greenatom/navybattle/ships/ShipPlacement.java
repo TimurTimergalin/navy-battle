@@ -27,7 +27,7 @@ public class ShipPlacement {
 
     public void placeShip(Ship ship) throws MisplacedShipException {
         if (!ship.getTiles().allMatch(this::tileAvailable)) {
-            throw new MisplacedShipException("Invalid placement for a ship");
+            throw new MisplacedShipException();
         }
 
         ship.getTiles().forEach(c -> tiles[c.y()][c.x()] = ship);
