@@ -1,5 +1,6 @@
 package com.greenatom.navybattle;
 
+import com.greenatom.navybattle.view.components.Chat;
 import com.greenatom.navybattle.view.components.InputLine;
 import com.greenatom.navybattle.view.components.TextLine;
 import com.greenatom.navybattle.view.components.field.Field;
@@ -20,10 +21,13 @@ public class Main {
                 .changeStatus(7, 5, TileStatus.VERTICAL)
                 .changeStatus(7, 6, TileStatus.VERTICAL);
 
-        var inputLabel = new TextLine(field.getRight() + 2, field.getTop(), "Type something: ");
-        var output = new TextLine(inputLabel.getLeft(), inputLabel.getBottom() + 1);
+        var chat = new Chat(field.getRight() + 3, field.getTop() + 1, 4);
+
+        var inputLabel = new TextLine(field.getRight() + 3, chat.getBottom() + 2, "Type something: ");
         var input = new InputLine(inputLabel.getRight() + 1, inputLabel.getTop());
-        output.setText(input.getInput());
+        for (int i = 0; i < 5; ++i) {
+            chat.addMessage(input.getInput());
+        }
 
         new Printer().goTo(20, 1).flush();
     }

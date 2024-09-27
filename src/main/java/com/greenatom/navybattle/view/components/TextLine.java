@@ -6,7 +6,7 @@ public class TextLine implements Component {
     private final int startX;
     private final int startY;
 
-    private int size = 0;
+    private String text = "";
 
     public TextLine(int startX, int startY) {
         this.startX = startX;
@@ -21,17 +21,21 @@ public class TextLine implements Component {
     private void clear(Printer printer) {
         printer.goTo(startY, startX);
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < text.length(); i++) {
             printer.text(" ");
         }
-        size = 0;
+        text = "";
+    }
+
+    public String getText() {
+        return text;
     }
 
     public void setText(String text) {
         var printer = new Printer();
         clear(printer);
         printer.goTo(startY, startX).text(text);
-        size = text.length();
+        this.text = text;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class TextLine implements Component {
 
     @Override
     public int getWidth() {
-        return size;
+        return text.length();
     }
 
     @Override
