@@ -13,7 +13,7 @@ import com.greenatom.navybattle.view.ShipPlacementView;
 import java.util.Map;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         int size = 10;
         var availableShipSizes = Map.of(
                 1, 4,
@@ -35,7 +35,8 @@ public class Main {
                                 availableShipSizes.keySet().stream().sorted().toList(),
                                 size
                         ),
-                        new BotIntellect(size)
+                        new BotIntellect(size),
+                        800
                 ),
                 placement -> new ShotTracker(placement, size)
         ).run();

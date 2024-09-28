@@ -8,10 +8,12 @@ import com.greenatom.navybattle.ships.ShipPlacement;
 public class BotClient implements Client {
     private final AutoShipPlacer autoShipPlacer;
     private final BotIntellect intellect;
+    private final int turnDelayMils;
 
-    public BotClient(AutoShipPlacer autoShipPlacer, BotIntellect intellect) {
+    public BotClient(AutoShipPlacer autoShipPlacer, BotIntellect intellect, int turnDelayMils) {
         this.autoShipPlacer = autoShipPlacer;
         this.intellect = intellect;
+        this.turnDelayMils = turnDelayMils;
     }
 
     @Override
@@ -42,7 +44,8 @@ public class BotClient implements Client {
     }
 
     @Override
-    public Coordinates requestShot() {
+    public Coordinates requestShot() throws InterruptedException {
+        Thread.sleep(turnDelayMils);
         return intellect.makeMove();
     }
 

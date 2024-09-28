@@ -34,7 +34,7 @@ public class GameController {
     }
 
     // Возвращает true, если надо продолжать ход
-    private boolean makeTurn() {
+    private boolean makeTurn() throws InterruptedException {
         Coordinates turn = active.client().requestShot();
 
         Client.UserError error = passive.field().checkShot(turn);
@@ -79,7 +79,7 @@ public class GameController {
         return true;
     }
 
-    public void run() {
+    public void run() throws InterruptedException {
         start();
         //noinspection StatementWithEmptyBody
         while (makeTurn()) {}

@@ -16,7 +16,7 @@ public interface Client {
     void declareVictory();
     void declareDefeat();
 
-    Coordinates requestShot();
+    Coordinates requestShot() throws InterruptedException;
 
     enum UserError {
         COORDINATES_OUT_OF_BOUNDS, REPEATED_MOVE
