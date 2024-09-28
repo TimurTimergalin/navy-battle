@@ -28,13 +28,14 @@ public class ShipPlacementManager {
         if (!availableShipSizes.containsKey(size)) {
             throw new UnavailableSizeException();
         }
+
+        var ship = new Ship(originX, originY, size, direction);
+        shipPlacement.placeShip(ship);
+
         availableShipSizes.put(size, availableShipSizes.get(size) - 1);
         if (availableShipSizes.get(size) == 0) {
             availableShipSizes.remove(size);
         }
-
-        var ship = new Ship(originX, originY, size, direction);
-        shipPlacement.placeShip(ship);
 
         TileStatus status = switch (direction) {
             case UP, DOWN -> TileStatus.VERTICAL;
