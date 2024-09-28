@@ -1,5 +1,6 @@
-package com.greenatom.navybattle.client;
+package com.greenatom.navybattle.client.player;
 
+import com.greenatom.navybattle.client.Client;
 import com.greenatom.navybattle.client.placement.NoShipsException;
 import com.greenatom.navybattle.client.placement.NotEnoughShipsPlacedException;
 import com.greenatom.navybattle.client.placement.ShipPlacementManager;
@@ -11,12 +12,13 @@ import com.greenatom.navybattle.view.BattleView;
 import com.greenatom.navybattle.view.ShipPlacementView;
 import com.greenatom.navybattle.view.components.field.TileStatus;
 
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class PlayerClient implements Client {
-    private class Parser {
+    public class Parser implements PlayerCommandParser {
         private static final Pattern putPattern = Pattern.compile("\\s*put\\s+(?<size>[1-9][0-9]*)\\s+(?<origin>[A-Za-z][1-9][0-9]*)(?:\\s+(?<direction>[UuDdLlRr]))?\\s*");
 
         // Возвращает null, если парсинг не удался
@@ -126,12 +128,17 @@ public class PlayerClient implements Client {
     private final ShipPlacementView shipPlacementView;
     private final BattleView battleView;
     private final ShipPlacementManager shipPlacementManager;
-    private final Parser parser = new Parser();
+    private final PlayerCommandParser parser;
 
-    public PlayerClient(ShipPlacementView shipPlacementView, BattleView battleView, ShipPlacementManager shipPlacementManager) {
+    public PlayerClient(
+            ShipPlacementView shipPlacementView,
+            BattleView battleView,
+            ShipPlacementManager shipPlacementManager,
+            Function<PlayerClient, PlayerCommandParser> parserFactory) {
         this.shipPlacementView = shipPlacementView;
         this.battleView = battleView;
         this.shipPlacementManager = shipPlacementManager;
+        this.parser = parserFactory.apply(this);
     }
 
     private Stream<BattleView.ShipTile> getTiles(ShipPlacement placement) {

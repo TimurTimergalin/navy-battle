@@ -1,7 +1,7 @@
 package com.greenatom.navybattle;
 
 import com.greenatom.navybattle.client.Client;
-import com.greenatom.navybattle.client.PlayerClient;
+import com.greenatom.navybattle.client.player.PlayerClient;
 import com.greenatom.navybattle.client.placement.ShipPlacementManager;
 import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.view.BattleView;
@@ -20,7 +20,8 @@ public class Main {
                         Map.of(
                                 1, 4
                         )
-                )
+                ),
+                c -> c.new Parser()
         );
         client.start();
 
