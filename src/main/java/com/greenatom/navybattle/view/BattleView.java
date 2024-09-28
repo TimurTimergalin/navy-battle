@@ -21,14 +21,6 @@ public class BattleView {
         this.size = size;
     }
 
-    public Field getAlliedField() {
-        return alliedField;
-    }
-
-    public Field getEnemyField() {
-        return enemyField;
-    }
-
     private void greetInChat() {
         log.addMessage("The battle begins!");
         log.addMessage("You go first");
@@ -49,7 +41,7 @@ public class BattleView {
 
         enemyField = new Field(alliedField.getRight() + 8, alliedField.getTop(), size);
         enemyField.draw();
-        log = new Chat(alliedField.getLeft() + 3, alliedField.getBottom() + 2, 4);
+        log = new Chat(alliedField.getLeft() + 2, alliedField.getBottom() + 2, 4);
         greetInChat();
 
         var inputLabel = new TextLine(log.getLeft(), log.getBottom() + 2, "Input coordinates: ");

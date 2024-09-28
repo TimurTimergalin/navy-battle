@@ -27,7 +27,7 @@ public class PlayerClient implements Client {
         this.shipPlacementManager = shipPlacementManager;
     }
 
-    private static final Pattern putMatch = Pattern.compile("\\s*put\\s+(?<size>[1-9][0-9]*)\\s+(?<origin>[A-Za-z][1-9][0-9]*)(?:\\s+(?<direction>[UDLR]))?\\s*");
+    private static final Pattern putMatch = Pattern.compile("\\s*put\\s+(?<size>[1-9][0-9]*)\\s+(?<origin>[A-Za-z][1-9][0-9]*)(?:\\s+(?<direction>[UuDdLlRr]))?\\s*");
 
     // Возвращает null, если парсинг не удался
     private static Ship.Coordinates parseCoordinates(String s) {
@@ -73,9 +73,9 @@ public class PlayerClient implements Client {
             }
 
             Ship.Direction dir = switch (direction) {
-                case "D" -> Ship.Direction.DOWN;
-                case "L" -> Ship.Direction.LEFT;
-                case "R" -> Ship.Direction.RIGHT;
+                case "D", "d" -> Ship.Direction.DOWN;
+                case "L", "l" -> Ship.Direction.LEFT;
+                case "R", "r" -> Ship.Direction.RIGHT;
                 case null, default -> Ship.Direction.UP;
             };
 
