@@ -3,6 +3,7 @@ package com.greenatom.navybattle.controller;
 import com.greenatom.navybattle.client.Client;
 import com.greenatom.navybattle.client.ShotStatus;
 import com.greenatom.navybattle.ships.Coordinates;
+import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.ships.ShipPlacement;
 
 import java.util.Arrays;
@@ -65,5 +66,9 @@ public class ShotTracker {
 
     public boolean isDead() {
         return shipsKilled == shipPlacement.getShipCount();
+    }
+
+    public Ship getShipAt(Coordinates c) {
+        return shipPlacement.getShipAt(c);
     }
 }

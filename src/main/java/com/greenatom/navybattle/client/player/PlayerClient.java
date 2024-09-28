@@ -25,6 +25,11 @@ public class PlayerClient implements Client {
 
         // Возвращает null, если парсинг не удался
         public Coordinates parseCoordinates(String s) {
+            s = s.trim();
+            if (s.length() < 2) {
+                return null;
+            }
+
             int x;
             int y;
 

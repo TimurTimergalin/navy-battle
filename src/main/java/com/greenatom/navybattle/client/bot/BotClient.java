@@ -38,7 +38,7 @@ public class BotClient implements Client {
 
     @Override
     public void registerAlliedShot(int x, int y, ShotStatus shotStatus) {
-        intellect.react(shotStatus);
+        intellect.react(x, y, shotStatus);
     }
 
     @Override

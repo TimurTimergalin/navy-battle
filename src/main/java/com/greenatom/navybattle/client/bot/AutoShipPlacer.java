@@ -8,6 +8,7 @@ import com.greenatom.navybattle.ships.MisplacedShipException;
 import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.ships.ShipPlacement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -39,8 +40,8 @@ public class AutoShipPlacer {
     public AutoShipPlacer(ShipPlacementManager shipPlacementManager, List<Integer> availableSizes, int fieldSize) {
         this.shipPlacementManager = shipPlacementManager;
 
-        this.availableSizes = availableSizes;
-        availableSizes.sort((i, j) -> j - i);
+        this.availableSizes = new ArrayList<>(availableSizes);
+        this.availableSizes.sort((i, j) -> j - i);
 
         this.fieldSize = fieldSize;
     }

@@ -9,7 +9,8 @@ import java.util.stream.Stream;
 public class BotIntellect {
     private interface Strategy {
         Coordinates makeMove();
-        void react(ShotStatus status);
+
+        void react(int x, int y, ShotStatus status);
     }
 
     private class DefaultStrategy implements Strategy {
@@ -31,10 +32,12 @@ public class BotIntellect {
         }
 
         @Override
-        public void react(ShotStatus status) {
+        public void react(int x, int y, ShotStatus status) {
+            Coordinates c = new Coordinates(x, y);
+            setTile(c);
             strategy = switch (status) {
                 case MISS, KILL -> this;
-                case HIT -> new FinishOffStrategy(lastShot);
+                case HIT -> new FinishOffStrategy(c);
             };
         }
     }
@@ -47,8 +50,8 @@ public class BotIntellect {
         }
 
         private boolean canShoot(Coordinates c) {
-            return !getTile(c) &&
-                    1 <= c.x() && c.x() <= size && 1 <= c.y() && c.y() <= size;
+            return 1 <= c.x() && c.x() <= size && 1 <= c.y() && c.y() <= size
+                    && !getTile(c);
         }
 
         private Coordinates singleTileCase() {
@@ -71,7 +74,7 @@ public class BotIntellect {
 
                 Stream.Builder<Coordinates> builder = Stream.builder();
                 options = builder
-                        .add(new Coordinates(x, shipCoordinates.getFirst().y() -1))
+                        .add(new Coordinates(x, shipCoordinates.getFirst().y() - 1))
                         .add(new Coordinates(x, shipCoordinates.getLast().y() + 1))
                         .build()
                         .filter(this::canShoot)
@@ -103,9 +106,11 @@ public class BotIntellect {
         }
 
         @Override
-        public void react(ShotStatus status) {
+        public void react(int x, int y, ShotStatus status) {
+            Coordinates c = new Coordinates(x, y);
+            setTile(c);
             switch (status) {
-                case HIT -> shipCoordinates.add(lastShot);
+                case HIT -> shipCoordinates.add(c);
                 case KILL -> strategy = new DefaultStrategy();
             }
         }
@@ -115,7 +120,6 @@ public class BotIntellect {
     private final int size;
     private Strategy strategy = new DefaultStrategy();
     public final Random rand = new Random();
-    private Coordinates lastShot = null;
 
     public BotIntellect(int size) {
         hitTiles = new boolean[size][size];
@@ -134,12 +138,10 @@ public class BotIntellect {
     }
 
     public Coordinates makeMove() {
-        lastShot = strategy.makeMove();
-        return lastShot;
+        return strategy.makeMove();
     }
 
-    public void react(ShotStatus status) {
-        setTile(lastShot);
-        strategy.react(status);
+    public void react(int x, int y, ShotStatus status) {
+        strategy.react(x, y, status);
     }
 }
