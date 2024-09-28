@@ -3,6 +3,7 @@ package com.greenatom.navybattle.view;
 import com.greenatom.navybattle.view.components.InputLine;
 import com.greenatom.navybattle.view.components.TextLine;
 import com.greenatom.navybattle.view.components.field.Field;
+import com.greenatom.navybattle.view.components.field.TileStatus;
 import com.greenatom.navybattle.view.utils.Printer;
 
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public class ShipPlacementView {
         this.allowedShips = new ArrayList<>(allowedShips);  // Во избежание изменений извне
     }
 
-    public Field getBattlefield() {
-        return battlefield;
+    public void updateBattlefield(int x, int y, TileStatus status) {
+        battlefield.changeStatus(x, y, status);
     }
 
     public void draw() {

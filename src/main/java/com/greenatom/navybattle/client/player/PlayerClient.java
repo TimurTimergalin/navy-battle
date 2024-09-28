@@ -55,7 +55,7 @@ public class PlayerClient implements Client {
         var matcher = putMatch.matcher(command);
 
         Consumer<ShipPlacementManager.CoordinateUpdate> updater = update ->
-                shipPlacementView.getBattlefield().changeStatus(update.x(), update.y(), update.status());
+                shipPlacementView.updateBattlefield(update.x(), update.y(), update.status());
 
         if (matcher.matches()) {  // Команда put
             int size = Integer.parseInt(matcher.group("size"));
