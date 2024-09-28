@@ -1,9 +1,9 @@
 package com.greenatom.navybattle;
 
-import com.greenatom.navybattle.client.Client;
+import com.greenatom.navybattle.client.ShotStatus;
 import com.greenatom.navybattle.client.player.PlayerClient;
 import com.greenatom.navybattle.client.placement.ShipPlacementManager;
-import com.greenatom.navybattle.ships.Ship;
+import com.greenatom.navybattle.ships.Coordinates;
 import com.greenatom.navybattle.view.BattleView;
 import com.greenatom.navybattle.view.ShipPlacementView;
 
@@ -25,8 +25,8 @@ public class Main {
         );
         client.start();
 
-        Ship.Coordinates cords = client.requestShot();
-        client.announceAlliedTurn(cords.x(), cords.y(), Client.ShotStatus.MISS);
-        client.registerAlliedShot(cords.x(), cords.y(), Client.ShotStatus.MISS);
+        Coordinates cords = client.requestShot();
+        client.announceAlliedTurn(cords.x(), cords.y(), ShotStatus.MISS);
+        client.registerAlliedShot(cords.x(), cords.y(), ShotStatus.MISS);
     }
 }

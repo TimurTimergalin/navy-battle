@@ -9,11 +9,11 @@ public class ShipPlacement {
     private final Ship[][] tiles;
     private final List<Ship> ships = new ArrayList<>();
 
-    private Ship getTile(Ship.Coordinates c) {
+    private Ship getTile(Coordinates c) {
         return tiles[c.y() - 1][c.x() - 1];
     }
 
-    private void setTile(Ship.Coordinates c, Ship tile) {
+    private void setTile(Coordinates c, Ship tile) {
         tiles[c.y() - 1][c.x() - 1] = tile;
     }
 
@@ -24,12 +24,12 @@ public class ShipPlacement {
         }
     }
 
-    private boolean coordinatesInBounds(Ship.Coordinates c) {
+    private boolean coordinatesInBounds(Coordinates c) {
         int size = tiles.length;
         return c.x() >= 1 && c.x() <= size && c.y() >= 1 && c.y() <= size;
     }
 
-    private boolean tileAvailable(Ship.Coordinates c) {
+    private boolean tileAvailable(Coordinates c) {
         return coordinatesInBounds(c) &&
                 getTile(c) == null &&
                 c.getNeighbors()
@@ -51,7 +51,7 @@ public class ShipPlacement {
         ships.remove(ship);
     }
 
-    public Ship getShipAt(Ship.Coordinates c) {
+    public Ship getShipAt(Coordinates c) {
         return getTile(c);
     }
 

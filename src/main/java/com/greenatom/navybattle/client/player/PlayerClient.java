@@ -1,10 +1,12 @@
 package com.greenatom.navybattle.client.player;
 
 import com.greenatom.navybattle.client.Client;
+import com.greenatom.navybattle.client.ShotStatus;
 import com.greenatom.navybattle.client.placement.NoShipsException;
 import com.greenatom.navybattle.client.placement.NotEnoughShipsPlacedException;
 import com.greenatom.navybattle.client.placement.ShipPlacementManager;
 import com.greenatom.navybattle.client.placement.UnavailableSizeException;
+import com.greenatom.navybattle.ships.Coordinates;
 import com.greenatom.navybattle.ships.MisplacedShipException;
 import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.ships.ShipPlacement;
@@ -22,7 +24,7 @@ public class PlayerClient implements Client {
         private static final Pattern putPattern = Pattern.compile("\\s*put\\s+(?<size>[1-9][0-9]*)\\s+(?<origin>[A-Za-z][1-9][0-9]*)(?:\\s+(?<direction>[UuDdLlRr]))?\\s*");
 
         // Возвращает null, если парсинг не удался
-        public Ship.Coordinates parseCoordinates(String s) {
+        public Coordinates parseCoordinates(String s) {
             int x;
             int y;
 
@@ -36,7 +38,7 @@ public class PlayerClient implements Client {
 
             try {
                 y = Integer.parseInt(s.substring(1));
-                return new Ship.Coordinates(x, y);
+                return new Coordinates(x, y);
             } catch (NumberFormatException e) {
                 return null;
             }
@@ -48,7 +50,7 @@ public class PlayerClient implements Client {
 
         private void put(Matcher matcher) {
             int size = Integer.parseInt(matcher.group("size"));
-            Ship.Coordinates coordinates = parseCoordinates(matcher.group("origin"));
+            Coordinates coordinates = parseCoordinates(matcher.group("origin"));
 
             if (coordinates == null) {
                 shipPlacementView.setErrorMessage("Invalid coordinates format");
@@ -224,8 +226,8 @@ public class PlayerClient implements Client {
     }
 
     @Override
-    public Ship.Coordinates requestShot() {
-        Ship.Coordinates res = parser.parseCoordinates(battleView.getCoordinates());
+    public Coordinates requestShot() {
+        Coordinates res = parser.parseCoordinates(battleView.getCoordinates());
         while (res == null) {
             battleView.setErrorMessage("Invalid coordinates format");
             res = parser.parseCoordinates(battleView.getCoordinates());
