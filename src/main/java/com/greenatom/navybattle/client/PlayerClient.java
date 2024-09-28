@@ -11,64 +11,52 @@ import com.greenatom.navybattle.view.BattleView;
 import com.greenatom.navybattle.view.ShipPlacementView;
 import com.greenatom.navybattle.view.components.field.TileStatus;
 
-import java.util.function.Consumer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class PlayerClient implements Client {
-    private final ShipPlacementView shipPlacementView;
-    private final BattleView battleView;
-    private final ShipPlacementManager shipPlacementManager;
+    private class Parser {
+        private static final Pattern putPattern = Pattern.compile("\\s*put\\s+(?<size>[1-9][0-9]*)\\s+(?<origin>[A-Za-z][1-9][0-9]*)(?:\\s+(?<direction>[UuDdLlRr]))?\\s*");
 
-    public PlayerClient(ShipPlacementView shipPlacementView, BattleView battleView, ShipPlacementManager shipPlacementManager) {
-        this.shipPlacementView = shipPlacementView;
-        this.battleView = battleView;
-        this.shipPlacementManager = shipPlacementManager;
-    }
+        // Возвращает null, если парсинг не удался
+        public Ship.Coordinates parseCoordinates(String s) {
+            int x;
+            int y;
 
-    private static final Pattern putMatch = Pattern.compile("\\s*put\\s+(?<size>[1-9][0-9]*)\\s+(?<origin>[A-Za-z][1-9][0-9]*)(?:\\s+(?<direction>[UuDdLlRr]))?\\s*");
+            if ('A' <= s.charAt(0) && s.charAt(0) <= 'Z') {
+                x = s.charAt(0) - 'A' + 1;
+            } else if ('a' <= s.charAt(0) && s.charAt(0) <= 'z') {
+                x = s.charAt(0) - 'a' + 1;
+            } else {
+                return null;
+            }
 
-    // Возвращает null, если парсинг не удался
-    private static Ship.Coordinates parseCoordinates(String s) {
-        int x;
-        int y;
-
-        if ('A' <= s.charAt(0) && s.charAt(0) <= 'Z') {
-            x = s.charAt(0) - 'A' + 1;
-        } else if ('a' <= s.charAt(0) && s.charAt(0) <= 'z') {
-            x = s.charAt(0) - 'a' + 1;
-        } else {
-            return null;
+            try {
+                y = Integer.parseInt(s.substring(1));
+                return new Ship.Coordinates(x, y);
+            } catch (NumberFormatException e) {
+                return null;
+            }
         }
 
-        try {
-            y = Integer.parseInt(s.substring(1));
-            return new Ship.Coordinates(x, y);
-        } catch (NumberFormatException e) {
-            return null;
+        private void updateBattlefield(ShipPlacementManager.CoordinateUpdate update) {
+            shipPlacementView.updateBattlefield(update.x(), update.y(), update.status());
         }
-    }
 
-    // Возвращает true, если надо начинать игру
-    private ShipPlacement parseCommand(String command) {
-        var matcher = putMatch.matcher(command);
-
-        Consumer<ShipPlacementManager.CoordinateUpdate> updater = update ->
-                shipPlacementView.updateBattlefield(update.x(), update.y(), update.status());
-
-        if (matcher.matches()) {  // Команда put
+        private void put(Matcher matcher) {
             int size = Integer.parseInt(matcher.group("size"));
             Ship.Coordinates coordinates = parseCoordinates(matcher.group("origin"));
 
             if (coordinates == null) {
                 shipPlacementView.setErrorMessage("Invalid coordinates format");
-                return null;
+                return;
             }
 
             String direction = matcher.group("direction");
             if (size != 1 && direction == null) {
                 shipPlacementView.setErrorMessage("You must specify a direction of the ship (U|D|L|R)");
-                return null;
+                return;
             }
 
             Ship.Direction dir = switch (direction) {
@@ -79,39 +67,71 @@ public class PlayerClient implements Client {
             };
 
             try {
-                shipPlacementManager.put(coordinates.x(), coordinates.y(), size, dir).forEach(updater);
+                shipPlacementManager
+                        .put(coordinates.x(), coordinates.y(), size, dir)
+                        .forEach(this::updateBattlefield);
                 shipPlacementView.setErrorMessage("");
-                return null;
             } catch (MisplacedShipException e) {
                 shipPlacementView.setErrorMessage("Unable to put the ship at given position");
-                return null;
             } catch (UnavailableSizeException e) {
                 shipPlacementView.setErrorMessage("You don't have a ship of such size");
-                return null;
             }
-        } else if (command.trim().equals("undo")) {  // Команда undo
+        }
+
+        private void undo() {
             try {
-                shipPlacementManager.undo().forEach(updater);
+                shipPlacementManager.undo().forEach(this::updateBattlefield);
                 shipPlacementView.setErrorMessage("");
-                return null;
             } catch (NoShipsException e) {
                 shipPlacementView.setErrorMessage("You don't have any ships to remove");
-                return null;
             }
-        } else if (command.trim().equals("start")) {  // Команда start
+        }
+
+        private ShipPlacement start() {
             try {
                 return shipPlacementManager.start();
             } catch (NotEnoughShipsPlacedException e) {
                 shipPlacementView.setErrorMessage("You haven't put all the ships yet");
                 return null;
             }
-        } else if (command.trim().equals("exit")) {  // Команда exit
-            System.exit(0);
-            return null;
-        } else {
-            shipPlacementView.setErrorMessage("Unable to recognize the command");
-            return null;
         }
+
+        private void exit() {
+            shipPlacementView.setErrorMessage("");
+            System.exit(0);
+        }
+
+        // Возвращает true, если надо начинать игру
+        public ShipPlacement parseCommand(String command) {
+            var matcher = putPattern.matcher(command);
+
+            if (matcher.matches()) {  // Команда put
+                put(matcher);
+                return null;
+            } else if (command.trim().equals("undo")) {  // Команда undo
+                undo();
+                return null;
+            } else if (command.trim().equals("start")) {  // Команда start
+                return start();
+            } else if (command.trim().equals("exit")) {  // Команда exit
+                exit();
+                return null;
+            } else {
+                shipPlacementView.setErrorMessage("Unable to recognize the command");
+                return null;
+            }
+        }
+    }
+
+    private final ShipPlacementView shipPlacementView;
+    private final BattleView battleView;
+    private final ShipPlacementManager shipPlacementManager;
+    private final Parser parser = new Parser();
+
+    public PlayerClient(ShipPlacementView shipPlacementView, BattleView battleView, ShipPlacementManager shipPlacementManager) {
+        this.shipPlacementView = shipPlacementView;
+        this.battleView = battleView;
+        this.shipPlacementManager = shipPlacementManager;
     }
 
     private Stream<BattleView.ShipTile> getTiles(ShipPlacement placement) {
@@ -134,7 +154,7 @@ public class PlayerClient implements Client {
 
         ShipPlacement res = null;
         while (res == null) {
-            res = parseCommand(shipPlacementView.getCommand());
+            res = parser.parseCommand(shipPlacementView.getCommand());
         }
         battleView.draw();
         battleView.drawAlliedBattlefield(getTiles(res));
@@ -198,10 +218,10 @@ public class PlayerClient implements Client {
 
     @Override
     public Ship.Coordinates requestShot() {
-        Ship.Coordinates res = parseCoordinates(battleView.getCoordinates());
+        Ship.Coordinates res = parser.parseCoordinates(battleView.getCoordinates());
         while (res == null) {
             battleView.setErrorMessage("Invalid coordinates format");
-            res = parseCoordinates(battleView.getCoordinates());
+            res = parser.parseCoordinates(battleView.getCoordinates());
         }
         battleView.setErrorMessage("");
         return res;
