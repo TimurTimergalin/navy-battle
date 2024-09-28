@@ -10,6 +10,7 @@ import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.ships.ShipPlacement;
 import com.greenatom.navybattle.view.BattleView;
 import com.greenatom.navybattle.view.ShipPlacementView;
+import com.greenatom.navybattle.view.components.field.TileStatus;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -139,5 +140,81 @@ public class PlayerClient implements Client {
         battleView.draw();
         battleView.drawAlliedBattlefield(getTiles(res));
         return res;
+    }
+
+    private String formatCoordinates(int x, int y) {
+        return String.valueOf((char) ('A' + x - 1)) + y;
+    }
+
+    private String formatShotStatus(ShotStatus status) {
+        return switch (status) {
+            case MISS -> "miss";
+            case HIT -> "hit";
+            case KILL -> "kill";
+        };
+    }
+
+    private void announceTurn(String side, int x, int y, ShotStatus shotStatus) {
+        String s = side + ": " + formatCoordinates(x, y) + " - " + formatShotStatus(shotStatus) + "!";
+        battleView.logMessage(s);
+    }
+
+    @Override
+    public void announceAlliedTurn(int x, int y, ShotStatus shotStatus) {
+        announceTurn("You", x, y, shotStatus);
+        battleView.setErrorMessage("");
+    }
+
+    @Override
+    public void announceEnemyTurn(int x, int y, ShotStatus shotStatus) {
+        announceTurn("Enemy", x, y, shotStatus);
+    }
+
+    private TileStatus shotToTileStatus(ShotStatus shotStatus) {
+        return switch (shotStatus) {
+            case MISS -> TileStatus.MISS;
+            case KILL, HIT -> TileStatus.HIT;
+        };
+    }
+
+    @Override
+    public void registerAlliedShot(int x, int y, ShotStatus shotStatus) {
+       battleView.updateEnemyBattlefield(x, y, shotToTileStatus(shotStatus));
+    }
+
+    @Override
+    public void registerEnemyShot(int x, int y, ShotStatus shotStatus) {
+        battleView.updateAlliedBattlefield(x, y, shotToTileStatus(shotStatus));
+    }
+
+    @Override
+    public void declareVictory() {
+        battleView.logMessage("You defeated your enemy - congratulations!");
+    }
+
+    @Override
+    public void declareDefeat() {
+        battleView.logMessage("You have been defeated!");
+    }
+
+    @Override
+    public Ship.Coordinates requestShot() {
+        Ship.Coordinates res = parseCoordinates(battleView.getCoordinates());
+        while (res == null) {
+            battleView.setErrorMessage("Invalid coordinates format");
+            res = parseCoordinates(battleView.getCoordinates());
+        }
+        battleView.setErrorMessage("");
+        return res;
+    }
+
+    @Override
+    public void reportUserError(UserError error) {
+        String message = switch (error) {
+            case COORDINATES_OUT_OF_BOUNDS -> "Coordinates out of bounds";
+            case REPEATED_MOVE -> "This tile has already been revealed";
+        };
+
+        battleView.setErrorMessage(message);
     }
 }

@@ -62,15 +62,26 @@ public class BattleView {
 
     public record ShipTile(int x, int y, boolean isVertical) {}
 
-    public void drawAlliedBattlefield(Stream<ShipTile> tiles) {
-        tiles.forEach(
-                tile -> alliedField.changeStatus(
-                        tile.x(),
-                        tile.y(),
-                        tile.isVertical() ? TileStatus.VERTICAL : TileStatus.HORIZONTAL
-                )
+    private void changeFieldStatus(Field field, ShipTile shipTile) {
+        field.changeStatus(
+                shipTile.x(),
+                shipTile.y(),
+                shipTile.isVertical() ? TileStatus.VERTICAL : TileStatus.HORIZONTAL
         );
+    }
 
+    public void drawAlliedBattlefield(Stream<ShipTile> tiles) {
+        tiles.forEach(tile -> changeFieldStatus(alliedField, tile));
+        putAtEnd();
+    }
+
+    public void updateAlliedBattlefield(int x, int y, TileStatus tileStatus) {
+        alliedField.changeStatus(x, y, tileStatus);
+        putAtEnd();
+    }
+
+    public void updateEnemyBattlefield(int x, int y, TileStatus tileStatus) {
+        enemyField.changeStatus(x, y, tileStatus);
         putAtEnd();
     }
 

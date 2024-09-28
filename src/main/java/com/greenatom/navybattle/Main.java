@@ -1,7 +1,9 @@
 package com.greenatom.navybattle;
 
+import com.greenatom.navybattle.client.Client;
 import com.greenatom.navybattle.client.player.PlayerClient;
 import com.greenatom.navybattle.client.player.placement.ShipPlacementManager;
+import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.view.BattleView;
 import com.greenatom.navybattle.view.ShipPlacementView;
 
@@ -16,13 +18,14 @@ public class Main {
                 new ShipPlacementManager(
                         10,
                         Map.of(
-                                1, 4,
-                                2, 3,
-                                3, 2,
-                                4, 1
+                                1, 4
                         )
                 )
         );
         client.start();
+
+        Ship.Coordinates cords = client.requestShot();
+        client.announceAlliedTurn(cords.x(), cords.y(), Client.ShotStatus.MISS);
+        client.registerAlliedShot(cords.x(), cords.y(), Client.ShotStatus.MISS);
     }
 }

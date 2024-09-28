@@ -1,7 +1,29 @@
 package com.greenatom.navybattle.client;
 
+import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.ships.ShipPlacement;
 
 public interface Client {
+    enum ShotStatus {
+        MISS, HIT, KILL
+    }
+
     ShipPlacement start();
+
+    void announceAlliedTurn(int x, int y, ShotStatus shotStatus);
+    void announceEnemyTurn(int x, int y, ShotStatus shotStatus);
+
+    void registerAlliedShot(int x, int y, ShotStatus shotStatus);
+    void registerEnemyShot(int x, int y, ShotStatus shotStatus);
+
+    void declareVictory();
+    void declareDefeat();
+
+    Ship.Coordinates requestShot();
+
+    enum UserError {
+        COORDINATES_OUT_OF_BOUNDS, REPEATED_MOVE
+    }
+
+    void reportUserError(UserError error);
 }
