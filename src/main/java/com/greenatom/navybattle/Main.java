@@ -1,8 +1,8 @@
 package com.greenatom.navybattle;
 
 import com.greenatom.navybattle.client.Client;
-import com.greenatom.navybattle.client.player.PlayerClient;
-import com.greenatom.navybattle.client.player.placement.ShipPlacementManager;
+import com.greenatom.navybattle.client.PlayerClient;
+import com.greenatom.navybattle.client.placement.ShipPlacementManager;
 import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.view.BattleView;
 import com.greenatom.navybattle.view.ShipPlacementView;

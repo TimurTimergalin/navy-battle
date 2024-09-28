@@ -1,10 +1,9 @@
-package com.greenatom.navybattle.client.player;
+package com.greenatom.navybattle.client;
 
-import com.greenatom.navybattle.client.Client;
-import com.greenatom.navybattle.client.player.placement.NoShipsException;
-import com.greenatom.navybattle.client.player.placement.NotEnoughShipsPlacedException;
-import com.greenatom.navybattle.client.player.placement.ShipPlacementManager;
-import com.greenatom.navybattle.client.player.placement.UnavailableSizeException;
+import com.greenatom.navybattle.client.placement.NoShipsException;
+import com.greenatom.navybattle.client.placement.NotEnoughShipsPlacedException;
+import com.greenatom.navybattle.client.placement.ShipPlacementManager;
+import com.greenatom.navybattle.client.placement.UnavailableSizeException;
 import com.greenatom.navybattle.ships.MisplacedShipException;
 import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.ships.ShipPlacement;

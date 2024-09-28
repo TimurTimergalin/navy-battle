@@ -1,4 +1,4 @@
-package com.greenatom.navybattle.client.player.placement;
+package com.greenatom.navybattle.client.placement;
 
 import com.greenatom.navybattle.ships.MisplacedShipException;
 import com.greenatom.navybattle.ships.Ship;
