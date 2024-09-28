@@ -11,7 +11,7 @@ import com.greenatom.navybattle.ships.ShipPlacement;
 import java.util.List;
 import java.util.Random;
 
-public class AutoShipPlacement {
+public class AutoShipPlacer {
     private class RandomGenerator {
         private final Random rand = new Random();
 
@@ -36,7 +36,7 @@ public class AutoShipPlacement {
     private final int fieldSize;
     private final RandomGenerator rand = new RandomGenerator();
 
-    public AutoShipPlacement(ShipPlacementManager shipPlacementManager, List<Integer> availableSizes, int fieldSize) {
+    public AutoShipPlacer(ShipPlacementManager shipPlacementManager, List<Integer> availableSizes, int fieldSize) {
         this.shipPlacementManager = shipPlacementManager;
 
         this.availableSizes = availableSizes;
