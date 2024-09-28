@@ -10,11 +10,10 @@ import com.greenatom.navybattle.ships.Ship;
 import com.greenatom.navybattle.ships.ShipPlacement;
 import com.greenatom.navybattle.view.BattleView;
 import com.greenatom.navybattle.view.ShipPlacementView;
-import com.greenatom.navybattle.view.components.field.Field;
-import com.greenatom.navybattle.view.components.field.TileStatus;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class PlayerClient implements Client {
     private final ShipPlacementView shipPlacementView;
@@ -115,18 +114,18 @@ public class PlayerClient implements Client {
         }
     }
 
-    private void drawAlliedBattlefield(ShipPlacement placement) {
-        Field alliedBattlefield = battleView.getAlliedField();
+    private Stream<BattleView.ShipTile> getTiles(ShipPlacement placement) {
+        Stream.Builder<BattleView.ShipTile> builder = Stream.builder();
 
         placement.getShips().forEach(
                 ship -> ship.getTiles().forEach(
-                        tile -> alliedBattlefield.changeStatus(
-                                tile.x(),
-                                tile.y(),
-                                ship.isVertical() ? TileStatus.VERTICAL : TileStatus.HORIZONTAL
+                        tile -> builder.add(
+                                new BattleView.ShipTile(tile.x(), tile.y(), ship.isVertical())
                         )
                 )
         );
+
+        return builder.build();
     }
 
     @Override
@@ -138,8 +137,7 @@ public class PlayerClient implements Client {
             res = parseCommand(shipPlacementView.getCommand());
         }
         battleView.draw();
-        drawAlliedBattlefield(res);
-        battleView.putAtEnd();
+        battleView.drawAlliedBattlefield(getTiles(res));
         return res;
     }
 }

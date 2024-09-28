@@ -89,7 +89,7 @@ public class ShipPlacementView {
         new Printer().flush();
     }
 
-    public void putAtEnd() {
+    private void putAtEnd() {
         new Printer().goTo(errorMessageLine.getBottom() + 1, 1);
     }
 }

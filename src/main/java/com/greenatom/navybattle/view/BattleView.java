@@ -4,7 +4,10 @@ import com.greenatom.navybattle.view.components.Chat;
 import com.greenatom.navybattle.view.components.InputLine;
 import com.greenatom.navybattle.view.components.TextLine;
 import com.greenatom.navybattle.view.components.field.Field;
+import com.greenatom.navybattle.view.components.field.TileStatus;
 import com.greenatom.navybattle.view.utils.Printer;
+
+import java.util.stream.Stream;
 
 public class BattleView {
     private final int size;
@@ -17,7 +20,6 @@ public class BattleView {
     public BattleView(int size) {
         this.size = size;
     }
-
 
     public Field getAlliedField() {
         return alliedField;
@@ -58,6 +60,20 @@ public class BattleView {
         printer.flush();
     }
 
+    public record ShipTile(int x, int y, boolean isVertical) {}
+
+    public void drawAlliedBattlefield(Stream<ShipTile> tiles) {
+        tiles.forEach(
+                tile -> alliedField.changeStatus(
+                        tile.x(),
+                        tile.y(),
+                        tile.isVertical() ? TileStatus.VERTICAL : TileStatus.HORIZONTAL
+                )
+        );
+
+        putAtEnd();
+    }
+
     public void logMessage(String message) {
         log.addMessage(message);
         putAtEnd();
@@ -77,7 +93,7 @@ public class BattleView {
         new Printer().flush();
     }
 
-    public void putAtEnd() {
+    private void putAtEnd() {
         new Printer().goTo(errorMessageLine.getBottom() + 1, 1);
     }
 }
