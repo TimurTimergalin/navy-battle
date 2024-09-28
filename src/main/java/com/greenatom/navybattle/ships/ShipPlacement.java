@@ -9,6 +9,14 @@ public class ShipPlacement {
     private final Ship[][] tiles;
     private final List<Ship> ships = new ArrayList<>();
 
+    private Ship getTile(Ship.Coordinates c) {
+        return tiles[c.y() - 1][c.x() - 1];
+    }
+
+    private void setTile(Ship.Coordinates c, Ship tile) {
+        tiles[c.y() - 1][c.x() - 1] = tile;
+    }
+
     public ShipPlacement(int size) {
         tiles = new Ship[size][size];
         for (int x = 0; x < size; x++) {
@@ -23,10 +31,10 @@ public class ShipPlacement {
 
     private boolean tileAvailable(Ship.Coordinates c) {
         return coordinatesInBounds(c) &&
-                tiles[c.y() - 1][c.x() - 1] == null &&
+                getTile(c) == null &&
                 c.getNeighbors()
                         .filter(this::coordinatesInBounds)
-                        .allMatch(cc -> tiles[cc.y() - 1][cc.x() - 1] == null);
+                        .allMatch(cc -> getTile(cc) == null);
     }
 
     public void placeShip(Ship ship) throws MisplacedShipException {
@@ -34,17 +42,17 @@ public class ShipPlacement {
             throw new MisplacedShipException();
         }
 
-        ship.getTiles().forEach(c -> tiles[c.y() - 1][c.x() - 1] = ship);
+        ship.getTiles().forEach(c -> setTile(c, ship));
         ships.add(ship);
     }
 
     public void removeShip(Ship ship) {
-        ship.getTiles().forEach(c -> tiles[c.y() - 1][c.x() - 1] = null);
+        ship.getTiles().forEach(c -> setTile(c, null));
         ships.remove(ship);
     }
 
     public Ship getShipAt(Ship.Coordinates c) {
-        return tiles[c.y() - 1][c.x() - 1];
+        return getTile(c);
     }
 
     public int getShipCount() {
