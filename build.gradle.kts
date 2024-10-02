@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.greenatom"
-version = "1.0-SNAPSHOT"
+version = "1.0.0-bw"
 
 repositories {
     mavenCentral()
@@ -16,4 +16,12 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks {
+    jar {
+        manifest {
+            attributes("Main-Class" to "com.greenatom.navybattle.Main")
+        }
+    }
 }
